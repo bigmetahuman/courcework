@@ -1,5 +1,4 @@
-import pandas as pd
-import numpy as np
+from libraries import *
 
 # =========================
 # Загрузка датасета
@@ -31,11 +30,11 @@ df.loc[kitchen_missing, 'Kitchen area'] = np.nan
 
 # Некорректные значения цены
 price_error = np.random.choice(df.index, size=int(len(df) * 0.01), replace=False)
-df.loc[price_error, 'Price'] = "error"
+df.loc[price_error, 'Price'] = random.randint(-1,-100)
 
 # Отрицательная площадь
 area_error = np.random.choice(df.index, size=int(len(df) * 0.005), replace=False)
-df.loc[area_error, 'Area'] = -50
+df.loc[area_error, 'Area'] = random.randint(-1,-100)
 
 # =========================
 # Проверка пропусков
