@@ -1,5 +1,6 @@
 from libraries import *
-
+#ERROR
+# in this item program sees price as category parameter
 df = pd.read_csv("data_dirty.csv")
 
 print("Количество объектов:", len(df))
