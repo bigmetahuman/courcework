@@ -1,23 +1,10 @@
 from libraries import *
 
-
-# Загрузка очищенных данных
-
-
 df = pd.read_csv("data_cleaned.csv")
-
-
 # Числовые признаки
-
-
 numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
 
-
-# Описательные статистики
-
-
 print("Описательные статистики:\n")
-
 for column in numeric_columns:
 
     print(f"\n===== {column} =====")
@@ -33,10 +20,6 @@ for column in numeric_columns:
     print("Дисперсия:", df[column].var())
 
     print("Стандартное отклонение:", df[column].std())
-
-
-# Общая таблица статистик
-
 
 print("\nОбщая статистика:\n")
 print(df[numeric_columns].describe())
