@@ -1,8 +1,7 @@
 from libraries import *
 df = pd.read_csv("data_cleaned.csv")
-# Числовые признаки
 numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
-# Гистограммы распределений
+
 for column in numeric_columns:
 
     plt.figure(figsize=(8, 5))
@@ -20,7 +19,6 @@ for column in numeric_columns:
     plt.show()
 
 
-# Boxplot (выбросы)
 for column in numeric_columns:
 
     plt.figure(figsize=(8, 4))
