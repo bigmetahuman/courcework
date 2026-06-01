@@ -1,0 +1,208 @@
+from libraries import *
+
+
+df = pd.read_csv("data.csv")
+
+
+print("Количество квартир:", len(df))
+
+
+area_missing = np.random.choice(df.index, size=int(len(df) * 0.01), replace=False)
+df.loc[area_missing, 'Area'] = np.nan
+
+kitchen_missing = np.random.choice(df.index, size=int(len(df) * 0.01), replace=False)
+df.loc[kitchen_missing, 'Kitchen area'] = np.nan
+
+price_error = np.random.choice(df.index, size=int(len(df) * 0.01), replace=False)
+df.loc[price_error, 'Price'] = random.randint(-100,-1)
+
+area_error = np.random.choice(df.index, size=int(len(df) * 0.005), replace=False)
+df.loc[area_error, 'Area'] = random.randint(-100,-1)
+
+print("\nКоличество пропусков:")
+print(df.isnull().sum())
+
+df.to_csv("data_dirty.csv", index=False)
+
+print("\nФайл data_dirty.csv успешно создан")
+''''''
+from libraries import *
+
+df = pd.read_csv("data_dirty.csv")
+
+print(df.head())
+''''''
+from libraries import *
+df = pd.read_csv("data_dirty.csv")
+
+print("Количество объектов:", len(df))
+
+numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+categorical_columns = df.select_dtypes(include=['object']).columns
+
+print("\nЧисловые параметры:")
+print(list(numeric_columns))
+
+print("\nКатегориальные параметры:")
+print(list(categorical_columns))
+''''''
+from libraries import *
+
+df = pd.read_csv("data_dirty.csv")
+
+print("Количество пропусков по столбцам:\n")
+print(df.isnull().sum())
+
+wrong_area = df[df['Area'] < 0]
+
+print("\nНекорректные значения площади:")
+print(wrong_area)
+
+wrong_price = df[df['Price'] == "error"]
+
+print("\nНекорректные значения цены:")
+print(wrong_price)
+
+print("\nТипы данных:\n")
+print(df.dtypes)
+
+''''''
+from libraries import *
+
+df = pd.read_csv("data_dirty.csv")
+
+df['Price'] = df['Price'].replace("error", np.nan)
+df['Price'] = pd.to_numeric(df['Price'])
+df.loc[df['Area'] < 0, 'Area'] = np.nan
+
+numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+categorical_columns = df.select_dtypes(include=['object']).columns
+
+# Заполнение числовых
+for column in numeric_columns:
+    df[column] = df[column].fillna(df[column].mean())
+
+# Заполнение категориальных
+for column in categorical_columns:
+    df[column] = df[column].fillna(df[column].mode()[0])
+
+# Проверка после очистки
+print("Количество пропусков после очистки:\n")
+print(df.isnull().sum())
+# Проверка некорректных данных
+print("\nОтрицательные площади:")
+print(df[df['Area'] < 0])
+
+print("\nНекорректные цены:")
+print(df[df['Price'] == "error"])
+
+df.to_csv("data_cleaned.csv", index=False)
+print("\nФайл data_cleaned.csv успешно создан")
+''''''
+''''''
+from libraries import *
+
+df = pd.read_csv("data_cleaned.csv")
+# Числовые признаки
+numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+
+print("Описательные статистики:\n")
+for column in numeric_columns:
+
+    print(f"\n===== {column} =====")
+
+    print("Среднее значение:", df[column].mean())
+
+    print("Медиана:", df[column].median())
+
+    print("Минимальное значение:", df[column].min())
+
+    print("Максимальное значение:", df[column].max())
+
+    print("Дисперсия:", df[column].var())
+
+    print("Стандартное отклонение:", df[column].std())
+
+print("\nОбщая статистика:\n")
+print(df[numeric_columns].describe())
+''''''
+from libraries import *
+df = pd.read_csv("data_cleaned.csv")
+numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+
+for column in numeric_columns:
+
+    plt.figure(figsize=(8, 5))
+
+    sns.histplot(df[column], bins=30, kde=True)
+
+    plt.title(f'Распределение признака: {column}')
+
+    plt.xlabel(column)
+
+    plt.ylabel("Количество объектов")
+
+    plt.grid(True)
+
+    plt.show()
+
+
+for column in numeric_columns:
+
+    plt.figure(figsize=(8, 4))
+
+    sns.boxplot(x=df[column])
+
+    plt.title(f'Boxplot признака: {column}')
+
+    plt.show()
+''''''
+from libraries import *
+df = pd.read_csv("data_cleaned.csv")
+numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+
+for column in numeric_columns:
+
+    plt.figure(figsize=(8, 5))
+
+    sns.histplot(df[column], bins=30, kde=True)
+
+    plt.title(f'Распределение признака: {column}')
+
+    plt.xlabel(column)
+
+    plt.ylabel("Количество объектов")
+
+    plt.grid(True)
+
+    plt.show()
+
+
+for column in numeric_columns:
+
+    plt.figure(figsize=(8, 4))
+
+    sns.boxplot(x=df[column])
+
+    plt.title(f'Boxplot признака: {column}')
+
+    plt.show()
+''''''
+from libraries import *
+
+df = pd.read_csv("data_cleaned.csv")
+
+correlation = df.corr(numeric_only=True)
+
+price_correlation = correlation['Price'].sort_values(ascending=False)
+print("Корреляция признаков с ценой:\n")
+print(price_correlation)
+
+top_features = price_correlation[1:4]
+print("\nТри признака с наибольшим влиянием:\n")
+print(top_features)
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation, annot=True, cmap='coolwarm')
+plt.title("Матрица корреляции")
+plt.show()

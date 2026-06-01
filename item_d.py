@@ -10,7 +10,7 @@ wrong_area = df[df['Area'] < 0]
 print("\nНекорректные значения площади:")
 print(wrong_area)
 
-wrong_price = df[df['Price'] == "error"]
+wrong_price = df[df['Price'] < 0]
 
 print("\nНекорректные значения цены:")
 print(wrong_price)
